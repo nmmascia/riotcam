@@ -42,6 +42,13 @@
         this.snapPhoto = (e) => {
             console.log(e);
         }
+
+        // lifecycle methods
+
+        this.on('before-unmount', () => {
+            this.stream.getVideoTracks()[0].stop();
+        });
+
     </script>
 
     <style scoped>
