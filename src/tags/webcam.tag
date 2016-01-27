@@ -1,14 +1,37 @@
 <stream>
-    <video src={opts.video} autoplay="true"></video>
+    <video id="video" src={opts.video} autoplay="true"></video>
+    <canvas id="canvas"></canvas>
+
+    <script>
+        this.canvas = null;
+        this.context = null;
+
+        this.on('mount', () => {
+            this.canvas = document.getElementById('canvas');
+            const video = document.getElementById('video');
+
+            this.context = canvas.getContext('2d');
+            this.context.drawImage(video, 0, 0);
+        });
+
+        this.getImageData = () => {
+            return this.canvas.toDataURL();
+        }
+    </script>
 
     <style scoped>
         video {
             display: block;
             margin: 0 auto;
-            border: 5px solid #666;
+            width: 100%;
+        }
+
+        canvas {
+            position: fixed;
+            bottom: 0;
+            right: 0;
         }
     </style>
-
 </stream>
 
 <webcam>
@@ -24,10 +47,11 @@
     <script>
         import getUserMedia from 'getusermedia';
 
-        this.title = 'Riotcam';
+        this.title = opts.title || '~~ Riotcam ~~';
         this.error = null;
         this.stream = null;
         this.video = null;
+        this.snaps = [];
 
         getUserMedia({ video: true }, (err, stream) => {
             if (err) {
@@ -40,19 +64,30 @@
         });
 
         this.snapPhoto = (e) => {
-            console.log(e);
+            const image = this.tags.stream.getImageData();
+            this.snaps = this.spans.push(image);
+            this.update();
         }
-
-        // lifecycle methods
 
         this.on('before-unmount', () => {
             this.stream.getVideoTracks()[0].stop();
         });
-
     </script>
 
     <style scoped>
+        section {
+            padding: 5px;
+            width: 700px;
+            background-color: #000042;
+            margin: 0 auto;
+            border-radius: 6px;
+            font-size: 16px;
+            color: #ffa4d1;
+        }
+
         h1 {
+            padding: 15px 0;
+            margin: 0;
             font-size: 2em;
             text-align: center;
             font-family: Arial, sans-serif;
@@ -61,9 +96,9 @@
 
         div {
             margin: 0 auto;
+            padding-top: 15px;
             height: 50px;
-            width: 650px;
-            background-color: #666;
+            width: 100%;
         }
 
         button {
@@ -73,5 +108,4 @@
             border-radius: 4px;
         }
     </style>
-
 </webcam>
