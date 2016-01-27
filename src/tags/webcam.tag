@@ -65,7 +65,7 @@
 
         this.snapPhoto = (e) => {
             const image = this.tags.stream.getImageData();
-            this.snaps = this.spans.push(image);
+            this.snaps = this.snaps.push(image);
             this.update();
         }
 
