@@ -1,6 +1,6 @@
 <stream>
     <video name="video" src={opts.video} autoplay="true" />
-    <canvas name="canvas" />
+    <canvas name="canvas" width="200" height="200" />
 
     <script>
         this.getData = () => {
@@ -30,20 +30,16 @@
 </stream>
 
 <images>
-    <div name="filmstrip" />
+    <div name="filmstrip">
+        <div
+            class="thumbnail"
+            each="{image in opts.data}"
+            style="background-image:url({image})"
+        />
+    </div>
 
     <script>
-        import { createThumbnail } from '../lib/webcam';
 
-        this.on('update', () => {
-            const newest = opts.data[opts.data.length - 1];
-
-            if (newest) {
-                const thumbnail = createThumbnail(newest);
-                this.filmstrip.appendChild(thumbnail);
-                this.update();
-            }
-        });
     </script>
 </images>
 
