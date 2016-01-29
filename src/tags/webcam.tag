@@ -1,22 +1,17 @@
 <stream>
-    <video id="video" src={opts.video} autoplay="true"></video>
-    <canvas id="canvas"></canvas>
+    <video name="video" src={opts.video} autoplay="true" />
+    <canvas name="canvas" />
 
     <script>
-        this.canvas = null;
-        this.context = null;
+        this.getData = () => {
+            const url = this.canvas.toDataURL();
+            return url;
+        }
 
         this.on('mount', () => {
-            this.canvas = document.getElementById('canvas');
-            const video = document.getElementById('video');
-
-            this.context = canvas.getContext('2d');
-            this.context.drawImage(video, 0, 0);
+            const context = this.canvas.getContext('2d');
+            context.drawImage(this.video, 0, 0, 700, 525);
         });
-
-        this.getImageData = () => {
-            return this.canvas.toDataURL();
-        }
     </script>
 
     <style scoped>
@@ -34,43 +29,68 @@
     </style>
 </stream>
 
+<images>
+    <div name="filmstrip" />
+
+    <script>
+        import { createThumbnail } from '../lib/webcam';
+
+        this.on('update', () => {
+            const newest = opts.data[opts.data.length - 1];
+
+            if (newest) {
+                const thumbnail = createThumbnail(newest);
+                this.filmstrip.appendChild(thumbnail);
+                this.update();
+            }
+        });
+    </script>
+</images>
+
 <webcam>
     <section>
         <h1>{title}</h1>
         <span if={error !== null}>{error}</span>
-        <stream if={stream !== null} video={video}></stream>
-        <div>
-            <button onclick={snapPhoto}>Take a photo!</button>
-        </div>
+        <stream if={stream !== null} video={video} />
+        <button onclick={snapPhoto}>Take a photo!</button>
     </section>
+    <images data={images} />
 
     <script>
-        import getUserMedia from 'getusermedia';
+        import {
+            closeStream,
+            createVideo,
+            requestCamera,
+        } from '../lib/webcam';
 
-        this.title = opts.title || '~~ Riotcam ~~';
         this.error = null;
+        this.images = [];
         this.stream = null;
+        this.title = opts.title || '~~ Riotcam ~~';
         this.video = null;
-        this.snaps = [];
 
-        getUserMedia({ video: true }, (err, stream) => {
-            if (err) {
-                this.error = err.name;
-            } else {
-                this.stream = stream;
-                this.video = URL.createObjectURL(stream);
-            };
+        // request camera access
+        requestCamera()
+        .then(stream => {
+            this.stream = stream;
+            this.video = createVideo(stream);
+            this.update();
+        })
+        .catch(err => {
+            this.error = err;
             this.update();
         });
 
+        // calls getData func on child tag, updates images
         this.snapPhoto = (e) => {
-            const image = this.tags.stream.getImageData();
-            this.snaps = this.snaps.push(image);
+            const image = this.tags.stream.getData();
+            this.images = [...this.images, image];
             this.update();
         }
 
+        // close stream before unmount
         this.on('before-unmount', () => {
-            this.stream.getVideoTracks()[0].stop();
+            closeStream(this.stream);
         });
     </script>
 
@@ -94,18 +114,12 @@
             text-transform: uppercase;
         }
 
-        div {
-            margin: 0 auto;
-            padding-top: 15px;
-            height: 50px;
-            width: 100%;
-        }
-
         button {
             display: block;
-            margin: 0 auto;
             padding: 10px;
+            margin: 15px auto 13px;
             border-radius: 4px;
+            height: 50px;
         }
     </style>
 </webcam>
