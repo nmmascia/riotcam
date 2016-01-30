@@ -1,17 +1,14 @@
 <stream>
-    <video name="video" src={opts.video} autoplay="true" />
-    <canvas name="canvas" width="200" height="200" />
+    <video name="video" src={opts.video} autoplay="true" width="700" height="525" />
+    <canvas name="canvas" width="350" height="200" />
 
     <script>
         this.getData = () => {
-            const url = this.canvas.toDataURL();
+            const context = this.canvas.getContext('2d');
+            context.drawImage(this.video, 0, 0, this.video.width, this.video.height);
+            const url = this.canvas.toDataURL('image/png');
             return url;
         }
-
-        this.on('mount', () => {
-            const context = this.canvas.getContext('2d');
-            context.drawImage(this.video, 0, 0, 700, 525);
-        });
     </script>
 
     <style scoped>
@@ -37,10 +34,6 @@
             style="background-image:url({image})"
         />
     </div>
-
-    <script>
-
-    </script>
 </images>
 
 <webcam>
