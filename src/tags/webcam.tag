@@ -1,6 +1,6 @@
 <stream>
     <video name="video" src={opts.video} autoplay="true" width="700" height="525" />
-    <canvas name="canvas" width="350" height="200" />
+    <canvas name="canvas" width="700" height="525" />
 
     <script>
         this.getData = () => {
@@ -19,21 +19,35 @@
         }
 
         canvas {
-            position: fixed;
-            bottom: 0;
-            right: 0;
+            display: none;
         }
     </style>
 </stream>
 
 <images>
-    <div name="filmstrip">
+    <div class="filmstrip" name="filmstrip">
         <div
             class="thumbnail"
             each="{image in opts.data}"
             style="background-image:url({image})"
         />
     </div>
+    <style scoped>
+        .filmstrip {
+            margin: 0 auto;
+            padding: 5px 0;
+            width: 700px;
+        }
+
+        .thumbnail {
+            display: inline-block;
+            height: 131px;
+            width: 175px;
+            background-position: center;
+            background-repeat: no-repeat;
+            background-size: contain;
+        }
+    </style>
 </images>
 
 <webcam>
