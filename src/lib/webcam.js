@@ -5,16 +5,6 @@ export function closeStream(stream) {
     return !stream.active;
 }
 
-export function createThumbnail(image) {
-    const el = document.createElement('div');
-    el.style.backgroundPosition = 'center';
-    el.style.backgroundRepeat = 'no-repeat';
-    el.style.backgroundImage = `url(${image})`;
-    el.style.height = 150;
-    el.style.width = 150;
-    return el;
-}
-
 export function createVideo(stream) {
     return URL.createObjectURL(stream);
 }

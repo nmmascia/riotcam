@@ -1,63 +1,18 @@
-<stream>
-    <video name="video" src={opts.video} autoplay="true" width="700" height="525" />
-    <canvas name="canvas" width="700" height="525" />
-
-    <script>
-        this.getData = () => {
-            const context = this.canvas.getContext('2d');
-            context.drawImage(this.video, 0, 0, this.video.width, this.video.height);
-            const url = this.canvas.toDataURL('image/png');
-            return url;
-        }
-    </script>
-
-    <style scoped>
-        video {
-            display: block;
-            margin: 0 auto;
-            width: 100%;
-        }
-
-        canvas {
-            display: none;
-        }
-    </style>
-</stream>
-
-<images>
-    <div class="filmstrip" name="filmstrip">
-        <div
-            class="thumbnail"
-            each="{image in opts.data}"
-            style="background-image:url({image})"
-        />
-    </div>
-    <style scoped>
-        .filmstrip {
-            margin: 0 auto;
-            padding: 5px 0;
-            width: 700px;
-        }
-
-        .thumbnail {
-            display: inline-block;
-            height: 131px;
-            width: 175px;
-            background-position: center;
-            background-repeat: no-repeat;
-            background-size: contain;
-        }
-    </style>
-</images>
-
 <webcam>
     <section>
         <h1>{title}</h1>
         <span if={error !== null}>{error}</span>
-        <stream if={stream !== null} video={video} />
+        <stream
+            if={stream !== null}
+            video={video}
+            width="700"
+            height="525"
+        />
         <button onclick={snapPhoto}>Take a photo!</button>
     </section>
-    <images data={images} />
+    <images
+        data={images}
+    />
 
     <script>
         import {
